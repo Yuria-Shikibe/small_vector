@@ -1225,6 +1225,16 @@ namespace gch
   namespace detail
   {
 
+  template <typename Integer>
+  GCH_NODISCARD
+   GCH_CONSTEVAL
+  std::size_t
+  numeric_max (void) noexcept
+  {
+  	static_assert (0 <= (std::numeric_limits<Integer>::max) (), "Integer is nonpositive.");
+  	return static_cast<std::size_t> ((std::numeric_limits<Integer>::max) ());
+  }
+
 #ifndef GCH_LIB_IS_SWAPPABLE
 
     namespace small_vector_adl
@@ -1281,7 +1291,7 @@ namespace gch
 
     template <typename Allocator>
     class GCH_EMPTY_BASE allocator_inliner<Allocator, true>
-      : private Allocator
+      : public Allocator
     {
     public:
       // Note: The Allocator named requirements specify that copies do not throw.
@@ -1813,16 +1823,6 @@ namespace gch
         -> decltype (to_address (p.operator-> ()))
       {
         return to_address (p.operator-> ());
-      }
-
-      template <typename Integer>
-      GCH_NODISCARD
-      static GCH_CONSTEVAL
-      std::size_t
-      numeric_max (void) noexcept
-      {
-        static_assert (0 <= (std::numeric_limits<Integer>::max) (), "Integer is nonpositive.");
-        return static_cast<std::size_t> ((std::numeric_limits<Integer>::max) ());
       }
 
       GCH_NODISCARD
